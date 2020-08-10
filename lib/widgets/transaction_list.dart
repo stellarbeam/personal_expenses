@@ -35,43 +35,26 @@ class TransactionList extends StatelessWidget {
               itemCount: _transactionList.length,
               itemBuilder: (context, index) {
                 return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        child: Text(
-                          '\$ ${_transactionList[index].amount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: FittedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            '\$ ${_transactionList[index].amount.toStringAsFixed(2)}',
                           ),
                         ),
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 15,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(10),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _transactionList[index].title,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          Text(
-                            '${DateFormat.yMMMd().format(_transactionList[index].date)}',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
+                    title: Text(
+                      '${_transactionList[index].title}',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(
+                        '${DateFormat.yMMMd().format(_transactionList[index].date)}'),
                   ),
                 );
               },
