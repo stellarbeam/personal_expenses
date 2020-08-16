@@ -140,7 +140,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     List<Widget> _buildLandscapeContent({
-      @required showChart,
       @required chartHeight,
       @required listHeight,
     }) {
@@ -165,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        showChart
+        _showChart
             ? getChartContainer(chartHeight)
             : getListContainer(listHeight),
       ];
@@ -179,7 +178,6 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: isLandscape
               ? _buildLandscapeContent(
-                  showChart: _showChart,
                   chartHeight: 0.7,
                   listHeight: 0.85,
                 )
