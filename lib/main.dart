@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
-      title: Text('Personal Expenses'),
+      title: const Text('Personal Expenses'),
       actions: [
         IconButton(
           icon: Icon(Icons.add),
@@ -109,56 +109,89 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
+    Container getChartContainer(chartHeight) {
+      return Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            chartHeight,
+        child: Chart(_recentTransactions),
+      );
+    }
+
+    Container getListContainer(listHeight) {
+      return Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            listHeight,
+        child: TransactionList(_transactionList, _deleteTransaction),
+      );
+    }
+
+    List<Widget> _buildPortraitContent({
+      @required chartHeight,
+      @required listHeight,
+    }) {
+      return [
+        getChartContainer(chartHeight),
+        getListContainer(listHeight),
+      ];
+    }
+
+    List<Widget> _buildLandscapeContent({
+      @required showChart,
+      @required chartHeight,
+      @required listHeight,
+    }) {
+      return [
+        Container(
+          height: (mediaQuery.size.height -
+                  appBar.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.15,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Show chart'),
+              Switch(
+                value: _showChart,
+                onChanged: (value) {
+                  setState(() {
+                    _showChart = value;
+                  });
+                },
+              )
+            ],
+          ),
+        ),
+        showChart
+            ? getChartContainer(chartHeight)
+            : getListContainer(listHeight),
+      ];
+    }
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (isLandscape)
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.15,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Show chart'),
-                    Switch(
-                      value: _showChart,
-                      onChanged: (value) {
-                        setState(() {
-                          _showChart = value;
-                        });
-                      },
-                    )
-                  ],
+          children: isLandscape
+              ? _buildLandscapeContent(
+                  showChart: _showChart,
+                  chartHeight: 0.7,
+                  listHeight: 0.85,
+                )
+              : _buildPortraitContent(
+                  chartHeight: 0.3,
+                  listHeight: 0.7,
                 ),
-              ),
-            if (!isLandscape || _showChart)
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    (isLandscape ? 0.7 : 0.3),
-                child: Chart(_recentTransactions),
-              ),
-            if (!isLandscape || !_showChart)
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    (isLandscape ? 0.85 : 0.7),
-                child: TransactionList(_transactionList, _deleteTransaction),
-              ),
-          ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () => _openNewTransactionForm(context),
       ),
     );
